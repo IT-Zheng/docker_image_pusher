@@ -4,7 +4,7 @@ portainer/portainer
 mysql
 mysql:5.7.44
 alpine/java:22-jdk
-centos
+centos:centos7
 nacos/nacos-server
 openjdk
 openjdk:25-slim
