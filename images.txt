@@ -1,9 +1,9 @@
-#nginx
+nginx
 redis
 portainer/portainer
 mysql
-alpine/java
-alpine
+mysql:5.7.44
+alpine/java:22-jdk
 centos
 nacos/nacos-server
 openjdk
