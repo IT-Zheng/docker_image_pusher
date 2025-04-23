@@ -24,7 +24,6 @@ jobs:
         echo "=============================================================================="
         df -hT
         echo "=============================================================================="
-
     # 增加可用磁盘空间
     - name: Maximize build space
       uses: easimon/maximize-build-space@master
@@ -48,7 +47,6 @@ jobs:
         echo "=============================================================================="
         df -hT
         echo "=============================================================================="
-
     - name: Checkout Code
       uses: actions/checkout@v4
 
@@ -119,7 +117,6 @@ jobs:
             echo "platform_prefix is $platform_prefix"
             # 获取镜像的完整名称，例如kasmweb/nginx:1.25.3（命名空间/镜像名:版本号）
             image=$(echo "$line" | awk '{print $NF}')
-
             # 获取 镜像名:版本号  例如nginx:1.25.3
             image_name_tag=$(echo "$image" | awk -F'/' '{print $NF}')
             # 获取命名空间 例如kasmweb  这里有种特殊情况 docker.io/nginx，把docker.io当成命名空间，也OK
@@ -138,7 +135,19 @@ jobs:
             
             # 将@sha256:等字符删除
             image_name_tag="${image_name_tag%%@*}"
-            new_image="$ALIYUN_REGISTRY/$ALIYUN_NAME_SPACE/$platform_prefix$name_space_prefix$image_name_tag"
+            # 确保镜像标签格式正确
+            if [[ -z "$image_name_tag" ]]; then
+                image_name_tag="$image_name:latest"
+            fi
+            # 构建新的镜像标签
+            new_image="$ALIYUN_REGISTRY/$ALIYUN_NAME_SPACE"
+            if [[ -n "$platform_prefix" ]]; then
+                new_image="$new_image/$platform_prefix"
+            fi
+            if [[ -n "$name_space_prefix" ]]; then
+                new_image="$new_image/$name_space_prefix"
+            fi
+            new_image="$new_image$image_name_tag"
             echo "docker tag $image $new_image"
             docker tag $image $new_image
             echo "docker push $new_image"
